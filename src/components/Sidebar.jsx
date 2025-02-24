@@ -3,14 +3,13 @@ import {
   HomeOutlined,
   ProductOutlined,
 } from "@ant-design/icons";
-import { Menu, message } from "antd";
+import { Menu } from "antd";
 import React from "react";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 function Sidebar({ collapsed }) {
-  // let location = useLocation();
+  let location = useLocation();
   // let navigate = useNavigate();
-  // console.log(location.pathname);
 
   return (
     <Menu
@@ -31,9 +30,6 @@ function Sidebar({ collapsed }) {
           key: "/products",
           icon: <ProductOutlined />,
           label: <Link to={"/products"}>Products</Link>,
-          onClick: () => {
-            message.success("sss");
-          },
         },
         {
           key: "/categories",
