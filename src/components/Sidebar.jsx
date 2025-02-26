@@ -2,10 +2,11 @@ import {
   FolderOpenOutlined,
   HomeOutlined,
   ProductOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import React from "react";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation } from "react-router";
 
 function Sidebar({ collapsed }) {
   let location = useLocation();
@@ -35,6 +36,16 @@ function Sidebar({ collapsed }) {
           key: "/categories",
           icon: <FolderOpenOutlined />,
           label: <Link to={"/categories"}>Catigories</Link>,
+        },
+        {
+          key: "/rentspage",
+          icon: <FolderOpenOutlined />,
+          label: <Link to={"/rentspage"}>Rents</Link>,
+        },
+        {
+          key: "/usespage",
+          icon: <UserOutlined />,
+          label: <Link to={"/userspage"}>Users</Link>,
         },
       ]}
     />

@@ -13,7 +13,7 @@ function LoginPage() {
       <Card className="shadow-lg w-96 shadow-black">
         <Form
           onFinish={(values) => {
-            console.log(values);
+            // console.log(values);
             setLoading(true);
             axios
               .post(`https://library.softly.uz/auth/signin`, values)
@@ -21,6 +21,7 @@ function LoginPage() {
                 authState.login(res.data);
                 setLoading(false);
                 message.success("Success");
+                localStorage.setItem("auth", JSON.stringify(res.data));
               });
           }}
         >
