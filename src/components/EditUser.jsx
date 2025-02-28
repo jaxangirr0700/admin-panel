@@ -1,43 +1,44 @@
-import React, { useState } from "react";
-import useAuthStore from "../store/my-store";
 import { Button, Drawer, Form, Input, InputNumber, message, Radio } from "antd";
 import axios from "axios";
+import React from "react";
+import useAuthStore from "../store/my-store";
 
-function AddUser({ isOpenDrawer, setIsOpenDrawer }) {
+function EditUser({ isOpenDrawerEdit, setIsOpenDrawerEdit, user }) {
   const authState = useAuthStore();
 
   return (
     <>
-      <Button
-        type="primary"
-        onClick={() => {
-          setIsOpenDrawer(true);
-        }}
-      >
-        + Qo'shish
-      </Button>
       <Drawer
-        title={"Kitobxon qo'shish"}
-        open={isOpenDrawer}
+        title={"Kitobxon o'zgartirish"}
+        open={isOpenDrawerEdit}
         closeIcon={null}
         onClose={() => {
-          setIsOpenDrawer(false);
+          setIsOpenDrawerEdit(false);
         }}
         destroyOnClose
       >
         <Form
-          // layout="vertical"
+          initialValues={{
+            firstName: user?.firstName,
+            lastName: user?.lastName,
+            phone: user?.phone,
+            gender: user?.gender,
+          }}
           onFinish={(values) => {
             console.log(values);
             const newValues = { ...values, phone: values.phone.toString() };
             console.log(newValues);
 
             axios
-              .post(`https://library.softly.uz/api/users`, newValues, {
-                headers: {
-                  Authorization: `Bearer ${authState.token}`,
-                },
-              })
+              .put(
+                `https://library.softly.uz/api/users/${user.id}`,
+                newValues,
+                {
+                  headers: {
+                    Authorization: `Bearer ${authState.token}`,
+                  },
+                }
+              )
               .then(() => {
                 // console.log(res);
                 setIsOpenDrawer(false);
@@ -103,4 +104,4 @@ function AddUser({ isOpenDrawer, setIsOpenDrawer }) {
   );
 }
 
-export default AddUser;
+export default EditUser;

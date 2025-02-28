@@ -12,6 +12,10 @@ function LoginPage() {
     <div className="flex items-center justify-center h-full m-auto mt-20">
       <Card className="shadow-lg w-96 shadow-black">
         <Form
+          initialValues={{
+            username: "lib2",
+            password: "lib22",
+          }}
           onFinish={(values) => {
             // console.log(values);
             setLoading(true);
