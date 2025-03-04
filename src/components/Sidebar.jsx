@@ -11,7 +11,6 @@ import { Link, useLocation } from "react-router";
 
 function Sidebar({ collapsed }) {
   let location = useLocation();
-  // let navigate = useNavigate();
 
   return (
     <Menu

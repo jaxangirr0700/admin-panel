@@ -2,7 +2,7 @@ import { message, Table } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import useAuthStore from "../../store/my-store";
-import AddStok from "../AddStok";
+import AddStok from "../AddAndEdits/AddStok";
 import { CheckCircleFilled, CheckCircleTwoTone } from "@ant-design/icons";
 
 function StoksPage() {
@@ -10,8 +10,9 @@ function StoksPage() {
   const [stoks, setStoks] = useState();
   const authState = useAuthStore();
   // console.log(authState.token);
-  const [currentPage, setCurrentPage] = useState(2);
+  const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
+  const [bookId, setBookId] = useState(null);
 
   useEffect(() => {
     axios
@@ -44,9 +45,13 @@ function StoksPage() {
         <AddStok
           isOpenDrawer={isOpenDrawer}
           setIsOpenDrawer={setIsOpenDrawer}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          bookId={bookId}
         />
       </div>
       <Table
+        scroll={100}
         bordered
         loading={stoks ? false : true}
         columns={[
@@ -60,6 +65,7 @@ function StoksPage() {
             title: "Kitob",
             dataIndex: "book",
             render: (book) => {
+              setBookId(book?.id);
               return (
                 <p>
                   {book?.id}.{book?.name}
@@ -72,6 +78,8 @@ function StoksPage() {
             title: "Bandlik",
             dataIndex: "busy",
             render: (value) => {
+              // console.log(value);
+
               return value ? (
                 <CheckCircleFilled twoToneColor={"#eb2f96"} />
               ) : (

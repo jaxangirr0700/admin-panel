@@ -1,11 +1,12 @@
 import { Button, Card, Form, Input, message } from "antd";
-import axios from "axios";
 import React, { useState } from "react";
 import useAuthStore from "../../store/my-store";
+import api from "../api/api";
 
 function LoginPage() {
   const [loading, setLoading] = useState(false);
   const authState = useAuthStore();
+
   //   console.log(authState);
 
   return (
@@ -19,14 +20,13 @@ function LoginPage() {
           onFinish={(values) => {
             // console.log(values);
             setLoading(true);
-            axios
-              .post(`https://library.softly.uz/auth/signin`, values)
-              .then((res) => {
-                authState.login(res.data);
-                setLoading(false);
-                message.success("Success");
-                localStorage.setItem("auth", JSON.stringify(res.data));
-              });
+            api.post(`/auth/signin`, values).then((res) => {
+              authState.login(res.data);
+
+              setLoading(false);
+              message.success("Success");
+              localStorage.setItem("auth", JSON.stringify(res.data));
+            });
           }}
         >
           <Form.Item

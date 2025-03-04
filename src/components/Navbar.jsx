@@ -1,6 +1,5 @@
 import {
   LeftCircleOutlined,
-  LeftOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UserAddOutlined,

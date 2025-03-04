@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import useAuthStore from "../store/my-store";
 import { Button, Drawer, Form, Input, InputNumber, message, Radio } from "antd";
 import axios from "axios";
+import useAuthStore from "../../store/my-store";
 
-function AddUser({ isOpenDrawer, setIsOpenDrawer }) {
+function AddUser({ isOpenDrawer, setIsOpenDrawer, onFinish }) {
   const authState = useAuthStore();
 
   return (
@@ -28,21 +27,16 @@ function AddUser({ isOpenDrawer, setIsOpenDrawer }) {
         <Form
           // layout="vertical"
           onFinish={(values) => {
-            console.log(values);
+            // console.log(values);
             const newValues = { ...values, phone: values.phone.toString() };
-            console.log(newValues);
+            // console.log(newValues);
 
-            axios
-              .post(`https://library.softly.uz/api/users`, newValues, {
-                headers: {
-                  Authorization: `Bearer ${authState.token}`,
-                },
-              })
-              .then(() => {
-                // console.log(res);
-                setIsOpenDrawer(false);
-                message.success("Qo'shildi");
-              });
+            api.post(`/api/users`, newValues).then(() => {
+              // console.log(res);
+              onFinish();
+              setIsOpenDrawer(false);
+              message.success("Qo'shildi");
+            });
           }}
         >
           <Form.Item

@@ -1,37 +1,54 @@
-import axios from "axios";
+import { message, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import useAuthStore from "../../store/my-store";
-import { message, Switch, Table } from "antd";
-import AddUser from "../AddUser";
-import { Loading3QuartersOutlined } from "@ant-design/icons";
+import AddRent from "../AddAndEdits/AddRent";
+import EditRents from "../AddAndEdits/EditRents";
+import api from "../api/api";
 import Loader from "../loader/Loader";
+import EditRentsTwo from "../AddAndEdits/EditRentsTwo";
 
 function RentsPage() {
-  const [loading, setLoading] = useState(false);
   const authState = useAuthStore();
-  const [rents, setrents] = useState();
-  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
+  const [rents, setRents] = useState();
   const [currentPage, setCurrentPage] = useState(1);
+  const [books, setBooks] = useState();
+  const [edit, setEdit] = useState();
+  const [isOpenDrawerEditRents, setIsOpenDrawerEditRents] = useState(false);
 
-  useEffect(() => {
-    axios
-      .get(`https://library.softly.uz/api/rents`, {
+  function fetchRents() {
+    api
+      .get(`/api/rents`, {
         params: {
           size: 10,
           page: currentPage,
         },
-        headers: {
-          Authorization: `Bearer ${authState.token}`,
-        },
       })
       .then((res) => {
         // console.log(res.data);
-        setrents(res.data);
+        setRents(res.data);
+        const books_ids = res.data.items.map((item) => {
+          // console.log(item);
+
+          return item.stock.bookId;
+        });
+
+        api
+          .get("/api/books", {
+            params: {
+              id: books_ids,
+            },
+          })
+          .then((res) => {
+            setBooks(res.data.items);
+          });
       })
       .catch((err) => {
         console.log(err);
         message.error("RentsPage Error");
       });
+  }
+  useEffect(() => {
+    fetchRents();
   }, [currentPage]);
   if (!rents?.items) {
     return (
@@ -44,9 +61,19 @@ function RentsPage() {
     <div>
       <div className="flex justify-between px-2 py-1">
         <h1 className="font-bold text-2xl">RentPage</h1>
-        <AddUser />
+        <AddRent onFinish={fetchRents} />{" "}
+        <EditRentsTwo
+          isOpenDrawerEditRents={isOpenDrawerEditRents}
+          setIsOpenDrawerEditRents={setIsOpenDrawerEditRents}
+          edit={edit}
+          setEdit={setEdit}
+        />
       </div>
+
       <Table
+        scroll={{
+          x: 600,
+        }}
         bordered
         loading={rents ? false : true}
         columns={[
@@ -54,6 +81,21 @@ function RentsPage() {
             key: "id",
             title: "Id",
             dataIndex: "id",
+            render: (id) => {
+              return (
+                <div
+                  onClick={() => {
+                    setIsOpenDrawerEditRents(true);
+                    const user2 = rents.items.find((u) => {
+                      return u.id == id;
+                    });
+                    setEdit(user2);
+                  }}
+                >
+                  {id}{" "}
+                </div>
+              );
+            },
           },
           {
             key: "leasedAt",
@@ -71,7 +113,7 @@ function RentsPage() {
             key: "returnedAt",
             title: "Qaytdi",
             dataIndex: "returnedAt",
-            render: (value) => {
+            render: (value, item) => {
               // if (!value) {
               //   return <span>Hali Qaytarilmagan</span>;
               // }
@@ -80,15 +122,7 @@ function RentsPage() {
               //   day: "numeric",
               //   year: "numeric",
               // });
-              return (
-                <Switch
-                  onChange={(checked) => {
-                    axios.put();
-                  }}
-                  // loading={true}
-                  checked={value ? true : false}
-                ></Switch>
-              );
+              return <EditRents value={value} item={item} />;
             },
           },
           {
@@ -102,6 +136,14 @@ function RentsPage() {
                   <p>{item.lastName}</p>
                 </div>
               );
+            },
+          },
+          {
+            key: "stock",
+            title: "Zaxira Kitob",
+            dataIndex: "stock",
+            render: (item) => {
+              return <ZaxiraKitobKatagi stock={item} books={books} />;
             },
           },
         ]}
@@ -120,5 +162,26 @@ function RentsPage() {
     </div>
   );
 }
+function ZaxiraKitobKatagi({ stock, books }) {
+  const book = books?.find((f) => {
+    return f.id === stock.bookId;
+  });
+  return (
+    <div>
+      <p>
+        {stock.id}/{stock.bookId} {book?.name}
+      </p>
+    </div>
+  );
+}
+
+// function Add(a) {
+//   return function AddTwo(b) {
+//     return (c) => {
+//       return a * b * c;
+//     };
+//   };
+// }
+// console.log(Add(1)(2)(3));
 
 export default RentsPage;

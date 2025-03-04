@@ -1,10 +1,10 @@
-import { Button, Drawer, Form, Input, message, Select, Spin } from "antd";
+import { Button, Drawer, Form, message, Select } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import useAuthStore from "../store/my-store";
-import Loader from "./loader/Loader";
+import Loader from "../loader/Loader";
+import useAuthStore from "../../store/my-store";
 
-function AddStok({ isOpenDrawer, setIsOpenDrawer }) {
+function AddStok({ isOpenDrawer, setIsOpenDrawer, pageSize, currentPage }) {
   const authState = useAuthStore();
 
   const [books, setBooks] = useState();
@@ -12,6 +12,10 @@ function AddStok({ isOpenDrawer, setIsOpenDrawer }) {
   useEffect(() => {
     axios
       .get("https://library.softly.uz/api/books", {
+        params: {
+          pageSize: 20,
+          page: currentPage,
+        },
         headers: {
           Authorization: `Bearer ${authState.token}`,
         },
@@ -34,11 +38,6 @@ function AddStok({ isOpenDrawer, setIsOpenDrawer }) {
       </div>
     );
   }
-
-  //   const newBooks = books.map((b) => {
-  //     return { id: b.id };
-  //   });
-  //   console.log(newBooks);
 
   return (
     <>
@@ -73,6 +72,8 @@ function AddStok({ isOpenDrawer, setIsOpenDrawer }) {
               .then((res) => {
                 console.log(res);
                 setIsOpenDrawer(false);
+                // console.log(res);
+
                 message.success("Qo'shildi");
               });
           }}
@@ -82,8 +83,10 @@ function AddStok({ isOpenDrawer, setIsOpenDrawer }) {
               showSearch
               placeholder="Kitob Qo'shish"
               options={books?.items.map((b) => {
+                // console.log(b);
+
                 return {
-                  label: b.name,
+                  label: `${b.name}   ${b.id}`,
                   value: b.id,
                 };
               })}

@@ -2,10 +2,10 @@ import { message, Table } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import useAuthStore from "../../store/my-store";
-import AddUser from "../AddUser";
-import { Loading3QuartersOutlined, LoadingOutlined } from "@ant-design/icons";
-import EditUser from "../EditUser";
 import Loader from "../loader/Loader";
+import AddUser from "../AddAndEdits/AddUser";
+import EditUser from "../AddAndEdits/EditUser";
+import api from "../api/api";
 
 function UsersPage() {
   const pageSize = 10;
@@ -19,9 +19,9 @@ function UsersPage() {
   const [user, setUser] = useState();
   const [isOpenDrawerEdit, setIsOpenDrawerEdit] = useState(false);
 
-  useEffect(() => {
-    axios
-      .get(`https://library.softly.uz/api/users`, {
+  function fetchUser() {
+    api
+      .get(`/api/users`, {
         params: {
           size: pageSize,
           page: currentPage,
@@ -32,7 +32,7 @@ function UsersPage() {
         },
       })
       .then((res) => {
-        // console.log(res.data);
+        // console.log(res.data.items);
 
         setUsers(res.data);
 
@@ -42,7 +42,10 @@ function UsersPage() {
         console.log(err);
         message.error("Xatolik");
       });
-  }, [isOpenDrawer, currentPage]);
+  }
+  useEffect(() => {
+    fetchUser();
+  }, [isOpenDrawer, currentPage, isOpenDrawerEdit]);
   if (!users) {
     return (
       <div className="flex items-center justify-center h-full w-full">
@@ -56,10 +59,12 @@ function UsersPage() {
         <h1 className="font-bold text-2xl">Kitobhonlar</h1>
         <div className="gap-3 flex">
           <AddUser
+            onFinish={fetchUser}
             isOpenDrawer={isOpenDrawer}
             setIsOpenDrawer={setIsOpenDrawer}
           />
           <EditUser
+            onFinish={fetchUser}
             isOpenDrawerEdit={isOpenDrawerEdit}
             setIsOpenDrawerEdit={setIsOpenDrawerEdit}
             user={user}
@@ -96,13 +101,36 @@ function UsersPage() {
             title: "Ism",
             dataIndex: "firstName",
           },
+
           {
             key: "lastName",
             title: "Familiya",
             dataIndex: "lastName",
           },
+          {
+            key: "phone",
+            title: "Telefon",
+            dataIndex: "phone",
+          },
+
+          {
+            key: "gender",
+            title: "Jinsi",
+            dataIndex: "gender",
+            render: (g) => {
+              if (g === "male") {
+                return "Erkak";
+              } else if (g === "female") {
+                return "Ayol";
+              } else {
+                return "Noma'lum";
+              }
+            },
+          },
         ]}
-        dataSource={users.items.map((user) => ({ ...user, key: user.id }))}
+        dataSource={users.items.map((user) => {
+          return { ...user, key: user.id };
+        })}
         pagination={{
           pageSize: pageSize,
           current: currentPage,

@@ -1,7 +1,7 @@
 import { Button, Drawer, Form, Input, InputNumber, message, Radio } from "antd";
 import axios from "axios";
 import React from "react";
-import useAuthStore from "../store/my-store";
+import useAuthStore from "../../store/my-store";
 
 function EditUser({ isOpenDrawerEdit, setIsOpenDrawerEdit, user }) {
   const authState = useAuthStore();
@@ -41,7 +41,7 @@ function EditUser({ isOpenDrawerEdit, setIsOpenDrawerEdit, user }) {
               )
               .then(() => {
                 // console.log(res);
-                setIsOpenDrawer(false);
+                setIsOpenDrawerEdit(false);
                 message.success("Qo'shildi");
               });
           }}
