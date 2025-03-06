@@ -84,6 +84,7 @@ function RentsPage() {
             render: (id) => {
               return (
                 <div
+                  className=" cursor-pointer"
                   onClick={() => {
                     setIsOpenDrawerEditRents(true);
                     const user2 = rents.items.find((u) => {

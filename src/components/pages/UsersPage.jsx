@@ -82,6 +82,7 @@ function UsersPage() {
             render: (id) => {
               return (
                 <div
+                  className="cursor-pointer"
                   onClick={() => {
                     const user2 = users.items.find((u) => {
                       return u.id == id;
