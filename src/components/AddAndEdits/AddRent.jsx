@@ -58,6 +58,9 @@ function AddRents({ onFinish }) {
         destroyOnClose
       >
         <Form
+          // initialValues={{
+          //   leasedAt: "2025-03-06T00",
+          // }}
           layout="vertical"
           onFinish={(values) => {
             console.log(values);

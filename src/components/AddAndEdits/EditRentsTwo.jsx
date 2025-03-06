@@ -10,9 +10,8 @@ function EditRentsTwo({
   edit,
   setEdit,
 }) {
-  console.log(edit);
+  // console.log(edit);
 
-  const authState = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     users: [],
@@ -20,20 +19,14 @@ function EditRentsTwo({
   });
 
   useEffect(() => {
-    api
-      .get("/api/stocks", {
-        params: {
-          "filters[busy]": false,
-        },
-      })
-      .then((res) => {
-        setData((data) => {
-          return {
-            ...data,
-            stocks: res.data.items,
-          };
-        });
+    api.get("/api/stocks").then((res) => {
+      setData((data) => {
+        return {
+          ...data,
+          stocks: res.data.items,
+        };
       });
+    });
 
     api.get("/api/users").then((res) => {
       setData((data) => {
@@ -44,6 +37,9 @@ function EditRentsTwo({
       });
     });
   }, []);
+  if (!edit) {
+    return <></>;
+  }
 
   return (
     <>
@@ -59,28 +55,26 @@ function EditRentsTwo({
         <Form
           layout="vertical"
           initialValues={{
-            userId: edit?.userId,
-            stockId: edit?.stockId,
-            leasedAt: "44",
-            returningDate: "",
+            ...edit,
+            leasedAt: edit.leasedAt.slice(0, 10),
+            returningDate: edit.leasedAt.slice(0, 10),
           }}
           onFinish={(values) => {
             console.log(values);
 
             setLoading(true);
             api
-              .post(`/api/rents`, values)
+              .put(`/api/rents/${edit.id}`, values)
               .then((res) => {
                 console.log(res.data);
+                message.success("Add Succes");
                 setIsOpenDrawerEditRents(false);
-
-                message.success("Succes Add ");
-
                 onFinish();
               })
-              .catch((e) => {
-                setLoading(false);
-                message.error(e.response.data.message);
+              .catch((err) => {
+                console.log(err);
+
+                message.error("Xatolik");
               })
               .finally(() => {
                 setLoading(false);

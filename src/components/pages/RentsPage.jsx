@@ -61,7 +61,7 @@ function RentsPage() {
     <div>
       <div className="flex justify-between px-2 py-1">
         <h1 className="font-bold text-2xl">RentPage</h1>
-        <AddRent onFinish={fetchRents} />{" "}
+        <AddRent onFinish={fetchRents} />
         <EditRentsTwo
           isOpenDrawerEditRents={isOpenDrawerEditRents}
           setIsOpenDrawerEditRents={setIsOpenDrawerEditRents}
@@ -133,6 +133,7 @@ function RentsPage() {
               return (
                 <div>
                   <p>{item.id}</p>
+                  <p>{item.firstName}</p>
                   <p>{item.lastName}</p>
                 </div>
               );

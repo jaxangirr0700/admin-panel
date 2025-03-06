@@ -4,7 +4,7 @@ import api from "../components/api/api";
 const useAuthStore = create((set) => {
   const lsString = JSON.parse(localStorage.getItem("auth"));
 
-  api.defaults.headers.Authorization = `Bearer ${lsString.token}`;
+  api.defaults.headers.Authorization = `Bearer ${lsString?.token}`;
   return {
     isAuthenticate: lsString?.token ? true : false,
     token: lsString?.token,

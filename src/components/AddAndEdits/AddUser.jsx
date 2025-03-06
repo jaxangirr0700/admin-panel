@@ -1,6 +1,7 @@
 import { Button, Drawer, Form, Input, InputNumber, message, Radio } from "antd";
 import axios from "axios";
 import useAuthStore from "../../store/my-store";
+import api from "../api/api";
 
 function AddUser({ isOpenDrawer, setIsOpenDrawer, onFinish }) {
   const authState = useAuthStore();
@@ -25,7 +26,7 @@ function AddUser({ isOpenDrawer, setIsOpenDrawer, onFinish }) {
         destroyOnClose
       >
         <Form
-          // layout="vertical"
+          layout="vertical"
           onFinish={(values) => {
             // console.log(values);
             const newValues = { ...values, phone: values.phone.toString() };
